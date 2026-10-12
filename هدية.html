@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>موقع الذكريات والهدية لرونتي الغالية ❤️ - مع أغاني أمير عيد</title>
+    
+    <!-- Tailwind CSS, Canvas-Confetti & FontAwesome -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Reem+Kufi:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            background: linear-gradient(135deg, #ffe4e6 0%, #fbcfe8 50%, #f472b6 100%);
+            background-attachment: fixed;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        .font-kufi {
+            font-family: 'Reem Kufi', sans-serif;
+        }
+
+        /* Mobile Shell Frame */
+        .mobile-shell {
+            max-width: 480px;
+            width: 100%;
+            min-height: 100vh;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.93);
+            box-shadow: 0 10px 30px rgba(244, 63, 94, 0.12);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.88);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            will-change: transform;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .glass-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(244, 63, 94, 0.15);
+        }
+
+        /* Optimized Floating Hearts */
+        .heart-particle {
+            position: fixed;
+            top: -5vh;
+            pointer-events: none;
+            z-index: 1;
+            will-change: transform;
+            animation: floatDown linear infinite;
+        }
+
+        @keyframes floatDown {
+            0% { transform: translateY(0) scale(0.8); opacity: 0.7; }
+            100% { transform: translateY(105vh) scale(1.1); opacity: 0; }
+        }
+
+        /* 3D Flip Card */
+        .perspective-1000 { perspective: 1000px; }
+        .transform-style-3d {
+            transform-style: preserve-3d;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: transform;
+        }
+        .card-flipped { transform: rotateY(180deg); }
+        .backface-hidden {
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+        .rotate-y-180 { transform: rotateY(180deg); }
+
+        /* Envelope Styles */
+        .envelope-wrapper { perspective: 1000px; }
+        .envelope {
+            width: 280px;
+            height: 190px;
+            background: #f43f5e;
+            position: relative;
+            border-radius: 0 0 16px 16px;
+            box-shadow: 0 10px 25px rgba(225, 29, 72, 0.2);
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            will-change: transform;
+        }
+        .envelope:active { transform: scale(0.98); }
+        .envelope-flap {
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 0;
+            border-left: 140px solid transparent;
+            border-right: 140px solid transparent;
+            border-top: 110px solid #fb7185;
+            transform-origin: top;
+            transition: transform 0.4s ease-out;
+            z-index: 5;
+            will-change: transform;
+        }
+        .envelope.open .envelope-flap { transform: rotateX(180deg); z-index: 1; }
+        .envelope-pocket {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 0;
+            border-left: 140px solid #f43f5e;
+            border-right: 140px solid #f43f5e;
+            border-bottom: 105px solid #e11d48;
+            border-radius: 0 0 16px 16px;
+            z-index: 4;
+        }
+        .letter-preview {
+            position: absolute;
+            bottom: 10px; left: 15px; right: 15px;
+            height: 145px;
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.45s ease-out;
+            z-index: 2;
+            text-align: center;
+            will-change: transform;
+        }
+        .envelope.open .letter-preview { transform: translateY(-85px) scale(1.02); z-index: 6; }
+        .seal-btn {
+            position: absolute;
+            top: 80px; left: 50%;
+            transform: translateX(-50%);
+            z-index: 7;
+            transition: opacity 0.25s ease, transform 0.25s ease;
+        }
+        .envelope.open .seal-btn { opacity: 0; pointer-events: none; transform: translateX(-50%) scale(0.5); }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        @keyframes heartPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+        }
+        .animate-heart-pulse { animation: heartPulse 1.6s infinite ease-in-out; }
+
+        /* Dynamic Entrance Animations for Sections */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in-up {
+            animation: fadeInUp 0.4s ease-out forwards;
+        }
+
+        .main-hero-btn { 
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.2s ease, box-shadow 0.2s ease; 
+            will-change: transform;
+        }
+        .main-hero-btn:hover { transform: translateY(-2px); }
+        .main-hero-btn:active { transform: scale(0.98); }
+        .main-hero-btn.active-tab { border-color: #f43f5e; box-shadow: 0 4px 12px rgba(244, 63, 94, 0.25); }
+
+        .tab-accordion {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .tab-accordion.tab-open { grid-template-rows: 1fr; opacity: 1; margin-top: 0.6rem; }
+        .tab-accordion-content { min-height: 0; }
+        .chevron-icon { transition: transform 0.3s ease; }
+        .active-tab .chevron-icon { transform: rotate(-90deg); }
+
+        #spotify-container {
+            transition: max-height 0.35s ease, opacity 0.3s ease;
+            max-height: 0; opacity: 0; overflow: hidden;
+        }
+        #spotify-container.open { max-height: 200px; opacity: 1; margin-bottom: 0.8rem; }
+
+        .msg-transition { transition: opacity 0.35s ease, transform 0.35s ease; will-change: transform, opacity; }
+        .msg-hidden { opacity: 0; transform: translateY(6px); }
+        .msg-visible { opacity: 1; transform: translateY(0); }
+
+        /* REALISTIC ROYAL CANDLE FLAME */
+        .royal-candle-flame {
+            width: 14px;
+            height: 28px;
+            background: linear-gradient(to bottom, #ffffff 0%, #ffea00 25%, #ff7700 65%, rgba(255, 0, 0, 0.8) 100%);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            position: absolute;
+            top: -26px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 0 20px #ff9d00, 0 0 35px #ffea00, 0 0 50px rgba(255, 119, 0, 0.6);
+            animation: flameFlicker 0.15s infinite alternate ease-in-out;
+            cursor: pointer;
+            will-change: transform;
+        }
+
+        @keyframes flameFlicker {
+            0% { transform: translateX(-50%) scale(1) rotate(-1deg); opacity: 0.95; }
+            100% { transform: translateX(-50%) scale(1.08) rotate(1deg); opacity: 1; }
+        }
+
+        .smoke {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 8px;
+            height: 8px;
+            background: rgba(220, 220, 220, 0.8);
+            border-radius: 50%;
+            animation: smokeRise 1.8s ease-out forwards;
+            pointer-events: none;
+            will-change: transform, opacity;
+        }
+
+        @keyframes smokeRise {
+            0% { opacity: 0.8; transform: translateX(-50%) translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateX(-50%) translateY(-55px) scale(3.5); filter: blur(4px); }
+        }
+
+        .royal-glow {
+            filter: drop-shadow(0 0 25px rgba(245, 158, 11, 0.4));
+        }
+    </style>
+</head>
+<body class="sm:py-4">
+
+    <div id="hearts-bg" class="fixed inset-0 pointer-events-none z-0"></div>
+
+    <div class="mobile-shell relative overflow-hidden sm:rounded-[32px] sm:border-[5px] sm:border-rose-200/80">
+
+        <!-- 1. ENVELOPE LANDING SCREEN -->
+        <section id="envelope-screen" class="fixed inset-0 z-50 bg-gradient-to-br from-rose-500 via-pink-500 to-purple-600 flex flex-col items-center justify-center p-6 text-white text-center transition-all duration-400">
+            <div class="mb-6 space-y-2">
+                <span class="inline-block bg-white/20 backdrop-blur-md text-white text-xs px-4 py-1.5 rounded-full font-bold border border-white/30 shadow-md animate-pulse">
+                    💌 رسالة خاصة جداً
+                </span>
+                <h1 class="text-3xl font-black font-kufi tracking-wide drop-shadow-md">لرونتي الغالية ❤️</h1>
+                <p class="text-xs text-rose-100 font-medium">اضغطي على الرسالة أو الختم لفتح المفاجأة والأغاني!</p>
+            </div>
+
+            <div class="envelope-wrapper my-2">
+                <div id="envelope" class="envelope" onclick="openEnvelope()">
+                    <div class="envelope-flap"></div>
+                    <div class="letter-preview flex flex-col items-center justify-center space-y-1">
+                        <span class="text-rose-500 text-2xl font-black">✨❤️✨</span>
+                        <p class="text-rose-900 font-bold text-sm font-kufi">إلى أرق وأجمل رونتي</p>
+                        <p class="text-[11px] text-slate-500">مجهزهولك مع أروع أغاني أمير عيد 🎵</p>
+                    </div>
+                    <div class="envelope-pocket"></div>
+                    <div class="seal-btn">
+                        <div class="w-14 h-14 bg-gradient-to-tr from-amber-400 to-amber-200 text-rose-800 rounded-full flex items-center justify-center text-xl font-bold shadow-xl border-2 border-white animate-heart-pulse">
+                            ❤️
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 bg-white/15 backdrop-blur-md px-6 py-2.5 rounded-2xl border border-white/25 shadow-lg max-w-xs">
+                <p class="text-lg font-black text-amber-200 font-kufi tracking-wider">
+                    كل سنه وانتي طيبه
+                </p>
+            </div>
+            <p class="text-[11px] text-rose-200/80 mt-5">انقري على الظرف لفتح التهنئة بالكامل 🎁</p>
+        </section>
+
+        <!-- WARNING BANNER / TIMER (3 MINUTES) -->
+        <div id="warning-banner" class="hidden bg-gradient-to-r from-rose-600 to-pink-600 text-white text-xs px-4 py-2.5 font-bold flex items-center justify-between shadow-md z-40 sticky top-0 border-b border-white/20">
+            <span class="flex items-center space-x-1.5 space-x-reverse">
+                <i class="fa-solid fa-triangle-exclamation text-amber-300 animate-bounce"></i>
+                <span>متطلعيش قبل 3 دقايق!</span>
+            </span>
+            <span id="timer-display" class="bg-black/20 px-3 py-0.5 rounded-full text-[12px] font-mono tracking-widest text-amber-200 border border-amber-300/30">03:00</span>
+        </div>
+
+        <header class="sticky top-0 z-30 bg-white/95 border-b border-rose-100/80 px-4 py-2.5 flex items-center justify-between shadow-sm">
+            <div class="flex items-center space-x-2.5 space-x-reverse">
+                <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-rose-500 to-pink-500 text-white flex items-center justify-center font-bold text-lg shadow-md animate-heart-pulse">
+                    ❤️
+                </div>
+                <div>
+                    <h1 class="text-sm font-black text-rose-900 leading-tight">عالم لرونتي الغالية</h1>
+                    <p class="text-[10px] text-rose-600 font-bold">مع بلاي ليست أغاني أمير عيد 🎸✨</p>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-2 space-x-reverse">
+                <button onclick="reopenEnvelope()" class="w-8 h-8 rounded-full bg-rose-100/80 text-rose-600 flex items-center justify-center text-xs shadow-inner transition-transform active:scale-90" title="إغلاق والعودة للظرف">
+                    <i class="fa-solid fa-envelope"></i>
+                </button>
+                <button onclick="toggleAudio()" id="music-btn" class="w-8 h-8 rounded-full bg-rose-100/80 text-rose-600 flex items-center justify-center text-xs shadow-inner transition-transform active:scale-90 relative" title="تشغيل/إخفاء أغاني أمير عيد">
+                    <i class="fa-solid fa-music"></i>
+                    <span id="music-indicator" class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-rose-500 rounded-full border-2 border-white hidden animate-ping"></span>
+                </button>
+            </div>
+        </header>
+
+        <main class="flex-1 overflow-y-auto no-scrollbar p-3.5 pb-6 relative z-10 space-y-3">
+
+            <!-- CAKE TRIGGER BUTTON (Appears after 3 minutes) -->
+            <div id="cake-trigger-btn" class="hidden my-2 transition-all duration-500">
+                <button onclick="openCakeModal()" class="w-full bg-gradient-to-r from-amber-400 via-rose-500 to-pink-600 text-white font-black py-3.5 px-4 rounded-2xl shadow-xl border-2 border-amber-200 animate-bounce flex items-center justify-center space-x-2 space-x-reverse text-sm font-kufi">
+                    <span>👑 اضغطي هنا لمفاجأة كيكة عيد الميلاد الملكية! 🎉</span>
+                </button>
+            </div>
+
+            <!-- Amir Eid Embedded Spotify Playlist Section -->
+            <div id="spotify-container" class="rounded-2xl overflow-hidden shadow-md border border-rose-200/80 bg-rose-50/50">
+                <div class="px-3 py-1.5 bg-gradient-to-r from-rose-600 to-pink-600 text-white text-[11px] font-bold flex items-center justify-between">
+                    <span class="flex items-center space-x-2 space-x-reverse">
+                        <i class="fa-brands fa-spotify text-emerald-300 text-sm"></i>
+                        <span>مشغل أغاني أمير عيد 🎤✨</span>
+                    </span>
+                    <button onclick="toggleAudio()" class="text-white/80 hover:text-white text-[10px] bg-white/10 hover:bg-white/20 px-2 py-0.5 rounded-lg transition-colors">
+                        إخفاء <i class="fa-solid fa-xmark mr-0.5"></i>
+                    </button>
+                </div>
+                <iframe 
+                    id="spotify-player"
+                    style="border-radius:0px 0px 16px 16px; margin:0; padding:0; display:block;" 
+                    src="https://open.spotify.com/embed/artist/1dYkjdBHkbyolcShgkh2Vp?utm_source=generator&theme=0" 
+                    width="100%" 
+                    height="152" 
+                    frameBorder="0" 
+                    allowfullscreen="" 
+                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+                    loading="lazy">
+                </iframe>
+            </div>
+
+            <!-- DYNAMIC MESSAGES BOX -->
+            <div class="w-full bg-white/60 rounded-2xl p-3.5 border border-white/80 shadow-sm text-center relative overflow-hidden animate-fade-in-up">
+                <div class="absolute -right-3 -top-3 text-rose-300/30 text-4xl">❤️</div>
+                <div id="message-display" class="msg-transition msg-visible font-kufi font-black text-xl sm:text-2xl text-rose-800 drop-shadow-sm leading-relaxed py-0.5">
+                    <!-- Dynamic message goes here -->
+                </div>
+            </div>
+
+            <!-- Hero Welcome Card -->
+            <div class="bg-gradient-to-r from-rose-500 via-pink-500 to-purple-600 rounded-2xl p-4 text-white shadow-md relative overflow-hidden text-center animate-fade-in-up">
+                <div class="relative z-10 space-y-1.5">
+                    <span class="bg-white/20 text-[11px] px-3 py-0.5 rounded-full font-bold border border-white/30 inline-block">
+                        كل سنة وانتي طيبة يا حياتي ❤️✨
+                    </span>
+                    <h2 class="text-xl font-black font-kufi leading-snug tracking-wide">منورة يا رونتييييييييييي 🥰✨</h2>
+                    <p class="text-[11px] text-rose-100 leading-relaxed font-medium max-w-xs mx-auto">
+                        اسمعي كل أغاني أمير عيد واكتشفي الذكريات الجميلة والهدية الملكية!
+                    </p>
+                </div>
+                <i class="fa-solid fa-heart-pulse absolute -right-3 -bottom-3 text-7xl text-white/10"></i>
+            </div>
+
+            <!-- THREE LARGE ACCORDION BUTTONS & SECTIONS -->
+            <div class="space-y-2.5 animate-fade-in-up">
+                <h3 class="text-xs font-black text-rose-900 pr-1 flex items-center space-x-1 space-x-reverse">
+                    <i class="fa-solid fa-star text-amber-400"></i>
+                    <span>الخانات الرئيسية (اضغطي للفتح):</span>
+                </h3>
+
+                <!-- الخانة الأولى: ذكريات حلوة -->
+                <div class="w-full">
+                    <button onclick="toggleAccordion('memories')" id="hero-btn-memories" class="main-hero-btn w-full bg-gradient-to-r from-rose-500 to-pink-500 text-white rounded-2xl p-3 flex items-center justify-between shadow-sm relative overflow-hidden border-2 border-transparent">
+                        <div class="flex items-center space-x-3 space-x-reverse text-right relative z-10">
+                            <div class="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center text-lg border border-white/30">
+                                📸
+                            </div>
+                            <div>
+                                <span class="text-[9px] bg-white/25 px-2 py-0.5 rounded-full font-bold">الخانة الأولى</span>
+                                <h4 class="text-sm font-black leading-tight mt-0.5">ذكريات حلوة</h4>
+                                <p class="text-[10px] text-rose-100 font-medium">أوقاتنا وصورنا الجميلة مع بعض</p>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-chevron-left chevron-icon text-white/80 text-xs relative z-10"></i>
+                    </button>
+
+                    <div id="sec-memories" class="tab-accordion">
+                        <div class="tab-accordion-content space-y-2.5 pt-1">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-xs font-extrabold text-rose-900 flex items-center space-x-1.5 space-x-reverse">
+                                    <i class="fa-solid fa-camera-retro text-rose-500"></i>
+                                    <span>ألبوم الذكريات الحلوة</span>
+                                </h3>
+                            </div>
+                            <div id="memories-container" class="space-y-2"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- الخانة الثانية: حاجات بحبها فيكي ❤️ -->
+                <div class="w-full">
+                    <button onclick="toggleAccordion('reasons')" id="hero-btn-reasons" class="main-hero-btn w-full bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-2xl p-3 flex items-center justify-between shadow-sm relative overflow-hidden border-2 border-transparent">
+                        <div class="flex items-center space-x-3 space-x-reverse text-right relative z-10">
+                            <div class="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center text-lg border border-white/30">
+                                ❤️
+                            </div>
+                            <div>
+                                <span class="text-[9px] bg-white/25 px-2 py-0.5 rounded-full font-bold">الخانة الثانية</span>
+                                <h4 class="text-sm font-black leading-tight mt-0.5 flex items-center space-x-1 space-x-reverse">
+                                    <span>حاجات بحبها فيكي</span>
+                                    <span>❤️</span>
+                                </h4>
+                                <p class="text-[10px] text-pink-100 font-medium">كروت تفاعلية تنقلب وتظهر صفاتك الساحرة</p>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-chevron-left chevron-icon text-white/80 text-xs relative z-10"></i>
+                    </button>
+
+                    <div id="sec-reasons" class="tab-accordion">
+                        <div class="tab-accordion-content space-y-2.5 pt-1">
+                            <div class="text-center bg-rose-50/90 border border-rose-200/80 rounded-2xl p-2.5 shadow-sm">
+                                <h3 class="text-xs font-black text-rose-800 flex items-center justify-center space-x-1 space-x-reverse mb-0.5">
+                                    <span>حاجات بحبها فيكي</span>
+                                    <span class="text-base animate-bounce">❤️</span>
+                                </h3>
+                                <p class="text-[10px] text-rose-600 font-medium">اضغطي على أي كارت تحت عشان ينقلب ويكشف سبب حبي ليكي!</p>
+                            </div>
+
+                            <button onclick="triggerHeartExplosion()" class="glass-card border border-rose-200 rounded-2xl p-2.5 w-full shadow-sm active:scale-95 transition-transform flex items-center justify-center space-x-2 space-x-reverse">
+                                <span class="text-xl animate-heart-pulse">❤️</span>
+                                <span class="text-xs font-bold text-rose-800">اضغطي هنا لإنفجار القلوب والورود! ✨</span>
+                            </button>
+
+                            <div id="reasons-grid" class="grid grid-cols-2 gap-2"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- الخانة الثالثة: هدية لرونتي الغالية 🎁 -->
+                <div class="w-full">
+                    <button onclick="toggleAccordion('gift')" id="hero-btn-gift" class="main-hero-btn w-full bg-gradient-to-r from-amber-500 via-rose-500 to-pink-600 text-white rounded-2xl p-3 flex items-center justify-between shadow-sm relative overflow-hidden border-2 border-transparent">
+                        <div class="flex items-center space-x-3 space-x-reverse text-right relative z-10">
+                            <div class="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center text-lg border border-white/30 animate-bounce">
+                                🎁
+                            </div>
+                            <div>
+                                <span class="text-[9px] bg-amber-300 text-slate-900 px-2 py-0.5 rounded-full font-black">الخانة الثالثة</span>
+                                <h4 class="text-sm font-black leading-tight mt-0.5">هدية لرونتي الغالية 🎁</h4>
+                                <p class="text-[10px] text-amber-100 font-medium">صندوق مفاجأة مجهز خصيصاً لكي</p>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-chevron-left chevron-icon text-white/80 text-xs relative z-10"></i>
+                    </button>
+
+                    <div id="sec-gift" class="tab-accordion">
+                        <div class="tab-accordion-content space-y-2.5 pt-1">
+                            <div class="glass-card rounded-2xl border border-rose-200/80 p-5 text-center shadow-sm relative overflow-hidden min-h-[200px] flex items-center justify-center">
+                                
+                                <div id="gift-closed" class="space-y-2.5 py-1 w-full">
+                                    <div class="relative inline-block cursor-pointer active:scale-95 transition-transform" onclick="openRountyGift()">
+                                        <div class="w-24 h-24 bg-gradient-to-tr from-amber-400 via-rose-500 to-pink-500 rounded-2xl flex items-center justify-center text-white text-4xl shadow-md mx-auto border-2 border-amber-200/80 relative">
+                                            <i class="fa-solid fa-box-open animate-bounce"></i>
+                                            <span class="absolute -top-2 -right-2 bg-rose-600 text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow-sm">افتحيني يا رونتي</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-sm font-black text-slate-800 font-kufi">هدية لرونتي الغالية 🎁</h3>
+                                        <p class="text-[10px] text-slate-500 mt-0.5">اضغطي على صندوق الهدية فوق عشان تفتحي المفاجأة!</p>
+                                    </div>
+                                </div>
+
+                                <div id="gift-opened" class="hidden w-full py-6 flex items-center justify-center cursor-pointer" onclick="openRountyGift()">
+                                    <div class="text-3xl sm:text-4xl font-black text-rose-600 tracking-wider bg-gradient-to-r from-rose-600 via-pink-600 to-rose-600 bg-clip-text text-transparent font-kufi drop-shadow-sm select-all animate-fade-in-up">
+                                        20/12/2026
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+    </div>
+
+    <!-- 2. LUXURY ROYAL CAKE & CANDLE MODAL SCREEN -->
+    <div id="cake-modal" class="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-lg flex flex-col items-center justify-center p-4 hidden text-center transition-all duration-500">
+        
+        <div class="space-y-1 mb-6">
+            <span class="bg-amber-400/20 text-amber-300 text-[10px] font-bold px-3 py-1 rounded-full border border-amber-400/30 inline-block tracking-widest">
+                👑 احتفال ملكي خاص 👑
+            </span>
+            <h2 class="text-2xl sm:text-3xl font-black text-white font-kufi tracking-wide drop-shadow-lg">
+                كل سنة وأنتي طيبة يا رونتي 🎉
+            </h2>
+            <p class="text-xs text-amber-200/90 font-medium">اضغطي على الشمعة الملكية لإطفائها واتمني أمنية ✨</p>
+        </div>
+
+        <!-- Royal Tiered Cake Wrapper -->
+        <div class="relative flex flex-col items-center justify-end my-4 royal-glow cursor-pointer" onclick="extinguishCandle()">
+            
+            <!-- Royal Candle Container -->
+            <div id="candle-container" class="relative w-5 h-16 bg-gradient-to-t from-amber-200 via-pink-100 to-white rounded-t-full shadow-md z-30 border border-amber-300 flex justify-center">
+                <div class="w-full h-full bg-gradient-to-b from-transparent via-amber-400/40 to-transparent rounded-t-full"></div>
+                <!-- Flame -->
+                <div id="candle-flame" class="royal-candle-flame"></div>
+            </div>
+
+            <!-- Tier 1 (Top Tier - Small) -->
+            <div class="w-28 h-10 bg-gradient-to-r from-rose-400 via-pink-300 to-rose-400 rounded-t-2xl border-b-4 border-amber-400 relative flex items-center justify-center shadow-lg z-20">
+                <div class="absolute -top-1.5 w-full flex justify-around text-[8px]">✨ 👑 ✨</div>
+                <span class="text-white text-[11px] font-black font-kufi tracking-widest text-shadow">رونتي</span>
+            </div>
+
+            <!-- Tier 2 (Middle Tier - Medium) -->
+            <div class="w-40 h-12 bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500 border-b-4 border-amber-400 relative flex items-center justify-center shadow-md z-10">
+                <div class="absolute inset-x-0 bottom-0 h-1.5 bg-amber-400/80 rounded-full"></div>
+                <div class="text-amber-200 text-xs tracking-widest">🌸 💖 🌸</div>
+            </div>
+
+            <!-- Tier 3 (Bottom Tier - Large Royal Base) -->
+            <div class="w-56 h-16 bg-gradient-to-r from-rose-800 via-rose-600 to-rose-800 rounded-b-3xl border-t-2 border-amber-300 flex items-center justify-center shadow-2xl relative">
+                <div class="absolute top-2 inset-x-0 h-3 bg-gradient-to-r from-amber-400 via-amber-200 to-amber-400 shadow-inner"></div>
+                <span class="text-amber-200 font-black text-sm tracking-widest font-kufi pt-2 drop-shadow-md">👑 HAPPY BIRTHDAY 👑</span>
+            </div>
+
+            <!-- Gold Plate Base -->
+            <div class="w-64 h-3 bg-gradient-to-r from-amber-500 via-amber-200 to-amber-500 rounded-full shadow-2xl mt-0.5 border border-amber-300"></div>
+        </div>
+
+        <p class="text-[11px] text-amber-200/70 italic mt-6 animate-pulse">انقري الشمعة لإطفائها ولبدء الاحتفال! ✨</p>
+    </div>
+
+    <!-- Applause Audio Element -->
+    <audio id="applause-sound" src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_bb630cc029.mp3?filename=applause-cheering-14586.mp3"></audio>
+
+    <script>
+        let audioCtx = null;
+        let isBdayMelodyPlaying = false;
+        let bdayMelodyTimeout = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        // Web Audio Synthesized Happy Birthday Tune
+        function playHappyBirthdayMelody() {
+            initAudio();
+            isBdayMelodyPlaying = true;
+
+            const notes = [
+                { f: 264, d: 0.3 }, { f: 264, d: 0.3 }, { f: 297, d: 0.6 }, { f: 264, d: 0.6 }, { f: 352, d: 0.6 }, { f: 330, d: 1.0 },
+                { f: 264, d: 0.3 }, { f: 264, d: 0.3 }, { f: 297, d: 0.6 }, { f: 264, d: 0.6 }, { f: 396, d: 0.6 }, { f: 352, d: 1.0 },
+                { f: 264, d: 0.3 }, { f: 264, d: 0.3 }, { f: 528, d: 0.6 }, { f: 440, d: 0.6 }, { f: 352, d: 0.6 }, { f: 330, d: 0.6 }, { f: 297, d: 0.8 },
+                { f: 466, d: 0.3 }, { f: 466, d: 0.3 }, { f: 440, d: 0.6 }, { f: 352, d: 0.6 }, { f: 396, d: 0.6 }, { f: 352, d: 1.2 }
+            ];
+
+            let currTime = audioCtx.currentTime + 0.1;
+
+            function scheduleTune() {
+                if (!isBdayMelodyPlaying) return;
+
+                notes.forEach(note => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(note.f, currTime);
+
+                    gain.gain.setValueAtTime(0.08, currTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, currTime + note.d - 0.05);
+
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+
+                    osc.start(currTime);
+                    osc.stop(currTime + note.d);
+
+                    currTime += note.d + 0.08;
+                });
+
+                const totalDuration = (currTime - audioCtx.currentTime) * 1000;
+                bdayMelodyTimeout = setTimeout(() => {
+                    if (isBdayMelodyPlaying) {
+                        currTime = audioCtx.currentTime + 0.1;
+                        scheduleTune();
+                    }
+                }, totalDuration);
+            }
+
+            scheduleTune();
+        }
+
+        function stopHappyBirthdayMelody() {
+            isBdayMelodyPlaying = false;
+            if (bdayMelodyTimeout) {
+                clearTimeout(bdayMelodyTimeout);
+            }
+        }
+
+        // REALISTIC WIND / BLOWING SOUND SYNTHESIZER
+        function playBlowWindSound() {
+            try {
+                initAudio();
+                const bufferSize = audioCtx.sampleRate * 1.2;
+                const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                const data = buffer.getChannelData(0);
+
+                // Generate Smooth Noise for Wind
+                for (let i = 0; i < bufferSize; i++) {
+                    data[i] = Math.random() * 2 - 1;
+                }
+
+                const noise = audioCtx.createBufferSource();
+                noise.buffer = buffer;
+
+                // Lowpass Filter for Realistic Blow Effect
+                const filter = audioCtx.createBiquadFilter();
+                filter.type = 'lowpass';
+                filter.frequency.setValueAtTime(600, audioCtx.currentTime);
+                filter.frequency.exponentialRampToValueAtTime(120, audioCtx.currentTime + 1.0);
+
+                const gain = audioCtx.createGain();
+                gain.gain.setValueAtTime(0.01, audioCtx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.3, audioCtx.currentTime + 0.2);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.1);
+
+                noise.connect(filter);
+                filter.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                noise.start();
+            } catch(e) {
+                console.error("Audio blow error", e);
+            }
+        }
+
+        function playSoftOpenSound() {
+            try {
+                initAudio();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(320, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(520, audioCtx.currentTime + 0.15);
+                gain.gain.setValueAtTime(0.03, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.18);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.18);
+            } catch(e) {}
+        }
+
+        function playSoftCloseSound() {
+            try {
+                initAudio();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(450, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(280, audioCtx.currentTime + 0.12);
+                gain.gain.setValueAtTime(0.025, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.14);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.14);
+            } catch(e) {}
+        }
+
+        function playSoftPopSound() {
+            try {
+                initAudio();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(580, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(750, audioCtx.currentTime + 0.08);
+                gain.gain.setValueAtTime(0.035, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.09);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.09);
+            } catch(e) {}
+        }
+
+        const specialMessages = [
+            "بحبك ي رورو ❤️",
+            "كل سنه وانتي طيبه ي اغلى حاجه عندي ✨",
+            "بعشقك ي بنوتي 🥰",
+            "يارب تكوني مبسوطه طول حياتك 🌸",
+            "بحبك موووت 🔥❤️",
+            "اوعي تكوني زعلانه من حاجه د انتي رورو 💖",
+            "اغلى رورو 👑",
+            "رونتي الغاليه 💕",
+            "كل سنه وانتي طيبه ي بنوتي 🎉",
+            "بحبك ي بنوتي ❤️",
+            "رورو رورو رورو بحبك 🥳✨",
+            "يارب نفضل مع بعض طول العمر 💍❤️"
+        ];
+
+        let availableMessages = [...specialMessages];
+
+        function showNextMessage() {
+            const displayEl = document.getElementById('message-display');
+            if (!displayEl) return;
+
+            if (availableMessages.length === 0) {
+                availableMessages = [...specialMessages];
+            }
+
+            const randomIndex = Math.floor(Math.random() * availableMessages.length);
+            const selectedMsg = availableMessages.splice(randomIndex, 1)[0];
+
+            displayEl.classList.remove('msg-visible');
+            displayEl.classList.add('msg-hidden');
+
+            setTimeout(() => {
+                displayEl.textContent = selectedMsg;
+                displayEl.classList.remove('msg-hidden');
+                displayEl.classList.add('msg-visible');
+            }, 400);
+        }
+
+        let memories = [
+            {
+                title: "عضلاتي و عضلاتك 💪🔥",
+                date: "أحلى ترند",
+                img: "https://i.imgur.com/bDqo5q9.jpeg",
+                desc: "شايف إن احنا احسن ناس عملت الترند بسببك عموما لأن صورتك جامدة 😉✨"
+            },
+            {
+                title: "أول ترند عملناه مع بعض 🎬❤️",
+                date: "ذكريات زمان",
+                img: "https://i.imgur.com/dRB27m3.jpeg",
+                desc: "فاكرة دا أول ترند عملناه مع بعض من زمااااان بس بجد كيوت + إيديكي حلوة 🥺💖"
+            },
+            {
+                title: "ذكرى مميزة ومبسطة ✨🥰",
+                date: "يوم مميز",
+                img: "https://i.imgur.com/VPj1zlu.jpeg",
+                desc: "الذكرى دي حلوة بالنسبة لي عشان كنتي مبسوطة ومش مهم نفتح تفاصيل احم ❤️"
+            },
+            {
+                title: "أول يوم اتكلمنا فيه 💬❤️",
+                date: "البداية الجميلة",
+                img: "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=500&q=80",
+                desc: "أول يوم اتكلمنا فيه حسيت إن في حاجة مختلفة تماماً، وحسيت إني عاوز أفضل جمبك طول عمري ✨"
+            },
+            {
+                title: "أول خناقة بسبب التيك توك 😅🥊",
+                date: "ذكريات زمان",
+                img: "https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&w=500&q=80",
+                desc: "فاكرة أول مرة اتخانقنا؟ كانت بسبب عيل على التيك توك لما كنتي بتدافعي عن أخته! كانت خناقة مش هنساه أبداً 😂"
+            },
+            {
+                title: "من ما بنطيقش بعض لأغلى حاجة 💖",
+                date: "رحلة حبنا",
+                img: "https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=500&q=80",
+                desc: "فاكرة لما كنا مش بنطيق بعض؟ دلوقتي ما بنقدرش نعيش غير مع بعض ومنستغناش عن بعض ثانية واحدة ❤️"
+            },
+            {
+                title: "أغرب اعتراف حب! 🙈💌",
+                date: "يوم الاعتراف",
+                img: "https://images.unsplash.com/photo-1534536281715-e28d76689b4d?auto=format&fit=crop&w=500&q=80",
+                desc: "فاكرة لما كنا بيست فريند وأنا اللي اعترفتلك؟ كان أغرب وأحلى اعتراف في الدنيا عموماً 😂❤️"
+            },
+            {
+                title: "أجمل مكالمة في حياتي 📞❤️",
+                date: "أول مكالمة",
+                img: "https://images.unsplash.com/photo-1534536281715-e28d76689b4d?auto=format&fit=crop&w=500&q=80",
+                desc: "أول مكالمة اتكلمنا فيها كانت أجمل وأحلى مكالمة في حياتي كلها ✨"
+            },
+            {
+                title: "سهر الإجازة للصبح 🌙✨",
+                date: "ليالي الإجازة",
+                img: "https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?auto=format&fit=crop&w=500&q=80",
+                desc: "أجمل سهرات لما كنا بنسهر سوا في الإجازة لحد الفجر ونفضل نتكلم ونضحك ❤️"
+            }
+        ];
+
+        const reasons = [
+            { title: "بحبك يا رونتي", desc: "بحبك يا رونتي على كل حالاتك ❤️", icon: "fa-heart" },
+            { title: "عيونك الساحرة", desc: "عيونك الجامدة 👀✨", icon: "fa-eye" },
+            { title: "حب بلا حدود", desc: "بحب كل حاجة فيكي عموماً 🥰❤️", icon: "fa-crown" },
+            { title: "صوتك الجميل", desc: "بحب صوتك 🎶🎤❤️", icon: "fa-music" },
+            { title: "طيبتك النادرة", desc: "بحب طيبتك 🌸💗", icon: "fa-hand-holding-heart" },
+            { title: "شقاوتك ولطافتك", desc: "بحب عبطك 🤪🤪❤️", icon: "fa-face-laugh-beam" }
+        ];
+
+        let timerInterval = null;
+
+        function openEnvelope() {
+            playSoftPopSound();
+            const env = document.getElementById('envelope');
+            const screen = document.getElementById('envelope-screen');
+            
+            env.classList.add('open');
+
+            setTimeout(() => {
+                confetti({
+                    particleCount: 40,
+                    spread: 60,
+                    origin: { y: 0.5 },
+                    colors: ['#f43f5e', '#ec4899', '#fb7185', '#ffd166']
+                });
+            }, 200);
+
+            setTimeout(() => { showAudioPlayer(); }, 500);
+
+            setTimeout(() => {
+                screen.classList.add('opacity-0', 'pointer-events-none');
+                setTimeout(() => {
+                    screen.classList.add('hidden');
+                    startWarningTimer();
+                }, 400);
+            }, 900);
+        }
+
+        function reopenEnvelope() {
+            playSoftCloseSound();
+            const env = document.getElementById('envelope');
+            const screen = document.getElementById('envelope-screen');
+
+            screen.classList.remove('hidden');
+            setTimeout(() => {
+                screen.classList.remove('opacity-0', 'pointer-events-none');
+                env.classList.remove('open');
+            }, 50);
+        }
+
+        // 3 Minutes Warning Timer Function (Modified to 3 mins)
+        function startWarningTimer() {
+            if (timerInterval) return;
+            
+            const banner = document.getElementById('warning-banner');
+            const display = document.getElementById('timer-display');
+            banner.classList.remove('hidden');
+
+            let duration = 3 * 60; // 3 Minutes in seconds
+
+            timerInterval = setInterval(() => {
+                let minutes = Math.floor(duration / 60);
+                let seconds = duration % 60;
+
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                display.textContent = `${minutes}:${seconds}`;
+
+                if (--duration < 0) {
+                    clearInterval(timerInterval);
+                    banner.classList.add('hidden');
+                    document.getElementById('cake-trigger-btn').classList.remove('hidden');
+                }
+            }, 1000);
+        }
+
+        function openCakeModal() {
+            playSoftOpenSound();
+            const cakeModal = document.getElementById('cake-modal');
+
+            cakeModal.classList.remove('hidden');
+            playHappyBirthdayMelody();
+        }
+
+        function extinguishCandle() {
+            const flame = document.getElementById('candle-flame');
+            const candleContainer = document.getElementById('candle-container');
+            const applauseSound = document.getElementById('applause-sound');
+            const cakeBtn = document.getElementById('cake-trigger-btn');
+
+            if (!flame || flame.style.display === 'none') return;
+
+            // 1. Play Wind Blow Sound & Stop Birthday Melody
+            playBlowWindSound();
+            stopHappyBirthdayMelody();
+
+            // 2. Hide flame
+            flame.style.display = 'none';
+
+            // 3. Create smoke effect
+            const smoke = document.createElement('div');
+            smoke.className = 'smoke';
+            candleContainer.appendChild(smoke);
+
+            // 4. Play Applause Sound after blow
+            setTimeout(() => {
+                applauseSound.play().catch(e => console.log(e));
+            }, 200);
+
+            // 5. Hide the Cake Trigger Button permanently
+            if (cakeBtn) {
+                cakeBtn.classList.add('hidden');
+            }
+
+            // 6. Confetti Explosion
+            confetti({
+                particleCount: 120,
+                spread: 80,
+                origin: { y: 0.6 },
+                colors: ['#f59e0b', '#f43f5e', '#ec4899', '#a855f7', '#3b82f6']
+            });
+
+            setTimeout(() => {
+                confetti({
+                    particleCount: 60,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 }
+                });
+                confetti({
+                    particleCount: 60,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 }
+                });
+            }, 300);
+
+            // 7. Close Modal and return to site
+            setTimeout(() => {
+                document.getElementById('cake-modal').classList.add('hidden');
+            }, 2800);
+        }
+
+        // Lightweight floating hearts generator
+        function generateFloatingHearts() {
+            const container = document.getElementById('hearts-bg');
+            const icons = ['❤️', '💖', '✨', '🌸'];
+            
+            for (let i = 0; i < 4; i++) { // Reduced count for lightness
+                const heart = document.createElement('div');
+                heart.className = 'heart-particle text-xs';
+                heart.innerText = icons[Math.floor(Math.random() * icons.length)];
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDuration = (Math.random() * 4 + 7) + 's';
+                heart.style.animationDelay = (Math.random() * 4) + 's';
+                container.appendChild(heart);
+            }
+        }
+
+        function toggleAccordion(tabId) {
+            const targetSec = document.getElementById(`sec-${tabId}`);
+            const targetBtn = document.getElementById(`hero-btn-${tabId}`);
+            const isCurrentlyOpen = targetSec.classList.contains('tab-open');
+
+            if (isCurrentlyOpen) {
+                playSoftCloseSound();
+            } else {
+                playSoftOpenSound();
+            }
+
+            document.querySelectorAll('.tab-accordion').forEach(sec => {
+                sec.classList.remove('tab-open');
+            });
+            document.querySelectorAll('.main-hero-btn').forEach(btn => {
+                btn.classList.remove('active-tab', 'border-rose-400/50');
+                btn.classList.add('border-transparent');
+            });
+
+            if (!isCurrentlyOpen && targetSec && targetBtn) {
+                targetSec.classList.add('tab-open');
+                targetBtn.classList.add('active-tab', 'border-rose-400/50');
+                targetBtn.classList.remove('border-transparent');
+
+                setTimeout(() => {
+                    targetBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }, 120);
+            }
+        }
+
+        function renderMemories() {
+            const container = document.getElementById('memories-container');
+            
+            if (memories.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-5 px-4 bg-white/80 rounded-2xl border-2 border-dashed border-rose-200">
+                        <div class="w-9 h-9 rounded-full bg-rose-100 text-rose-500 flex items-center justify-center text-lg mx-auto mb-1.5">📸</div>
+                        <h4 class="text-xs font-bold text-rose-900 mb-0.5">لا توجد ذكريات بعد..</h4>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = memories.map((mem) => `
+                <div class="glass-card rounded-2xl p-2.5 border border-rose-100 shadow-sm flex space-x-2.5 space-x-reverse items-start relative animate-fade-in-up">
+                    <img src="${mem.img}" 
+                         class="w-16 h-16 rounded-xl object-cover flex-shrink-0" 
+                         loading="lazy"
+                         onerror="this.src='https://placehold.co/200x200/fecdd3/e11d48?text=رونتي'">
+                    <div class="flex-1 min-w-0 pr-1">
+                        <div class="flex items-center justify-between mb-0.5">
+                            <span class="text-[9px] font-bold text-rose-600 bg-rose-100 px-2 py-0.5 rounded-full inline-block">
+                                ${mem.date || 'ذكرى جميلة'}
+                            </span>
+                        </div>
+                        <h4 class="text-xs font-black text-slate-800 truncate">${mem.title}</h4>
+                        <p class="text-[10px] text-slate-600 mt-0.5 leading-relaxed">${mem.desc}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderReasons() {
+            const grid = document.getElementById('reasons-grid');
+            grid.innerHTML = reasons.map((r) => `
+                <div class="perspective-1000 h-24 cursor-pointer animate-fade-in-up" onclick="flipReasonCard(this)">
+                    <div class="transform-style-3d relative w-full h-full rounded-2xl shadow-sm">
+                        <div class="backface-hidden absolute inset-0 bg-white/90 border border-rose-100 rounded-2xl p-2 flex flex-col items-center justify-center text-center">
+                            <i class="fa-solid ${r.icon} text-rose-500 text-lg mb-1"></i>
+                            <h4 class="text-xs font-bold text-slate-800">${r.title}</h4>
+                            <span class="text-[9px] text-rose-400 mt-0.5 font-semibold">اضغطي هنا ❤️</span>
+                        </div>
+                        <div class="backface-hidden rotate-y-180 absolute inset-0 bg-gradient-to-br from-rose-500 to-pink-600 text-white rounded-2xl p-2 flex items-center justify-center text-center shadow-sm">
+                            <p class="text-[10px] font-medium leading-tight">${r.desc}</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function flipReasonCard(card) {
+            playSoftPopSound();
+            const inner = card.querySelector('.transform-style-3d');
+            inner.classList.toggle('card-flipped');
+        }
+
+        function triggerHeartExplosion() {
+            playSoftPopSound();
+            confetti({
+                particleCount: 35,
+                spread: 60,
+                origin: { y: 0.6 },
+                colors: ['#f43f5e', '#ec4899', '#fb7185', '#a855f7']
+            });
+        }
+
+        function openRountyGift() {
+            playSoftOpenSound();
+            const closed = document.getElementById('gift-closed');
+            const opened = document.getElementById('gift-opened');
+
+            closed.classList.add('hidden');
+            opened.classList.remove('hidden');
+
+            confetti({
+                particleCount: 60,
+                spread: 75,
+                origin: { y: 0.6 }
+            });
+        }
+
+        let isAudioOpen = false;
+
+        function showAudioPlayer() {
+            const container = document.getElementById('spotify-container');
+            const btn = document.getElementById('music-btn');
+            const indicator = document.getElementById('music-indicator');
+
+            isAudioOpen = true;
+            container.classList.add('open');
+            btn.classList.add('bg-rose-500', 'text-white');
+            btn.classList.remove('bg-rose-100/80', 'text-rose-600');
+            indicator.classList.remove('hidden');
+        }
+
+        function hideAudioPlayer() {
+            const container = document.getElementById('spotify-container');
+            const btn = document.getElementById('music-btn');
+            const indicator = document.getElementById('music-indicator');
+
+            isAudioOpen = false;
+            container.classList.remove('open');
+            btn.classList.remove('bg-rose-500', 'text-white');
+            btn.classList.add('bg-rose-100/80', 'text-rose-600');
+            indicator.classList.add('hidden');
+        }
+
+        function toggleAudio() {
+            if (isAudioOpen) {
+                playSoftCloseSound();
+                hideAudioPlayer();
+            } else {
+                playSoftOpenSound();
+                showAudioPlayer();
+            }
+        }
+
+        window.onload = function() {
+            generateFloatingHearts();
+            renderMemories();
+            renderReasons();
+            
+            showNextMessage();
+            setInterval(showNextMessage, 15000);
+        };
+    </script>
+</body>
+</html>
